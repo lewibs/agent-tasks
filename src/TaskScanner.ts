@@ -16,12 +16,14 @@ function taskRegex(tag: string): RegExp {
 
 export async function scanForTasks(
 	vault: Vault,
-	tag: string
+	tag: string,
+	onlyFile?: TFile
 ): Promise<AgentTask[]> {
 	const regex = taskRegex(tag);
 	const tasks: AgentTask[] = [];
 
-	for (const file of vault.getMarkdownFiles()) {
+	const files = onlyFile ? [onlyFile] : vault.getMarkdownFiles();
+	for (const file of files) {
 		const content = await vault.cachedRead(file);
 		if (!content.includes(tag)) {
 			continue;

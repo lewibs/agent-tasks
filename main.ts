@@ -1,4 +1,10 @@
-import { FileSystemAdapter, Notice, Plugin, normalizePath } from "obsidian";
+import {
+	FileSystemAdapter,
+	Notice,
+	Plugin,
+	TFile,
+	normalizePath,
+} from "obsidian";
 import { SettingsManager, AgentTasksSettings } from "src/SettingsManager";
 import { SettingsTab } from "src/SettingsTab";
 import { AgentTask, scanForTasks, replaceTaskLine } from "src/TaskScanner";
@@ -26,8 +32,21 @@ export default class AgentTasks extends Plugin {
 
 		this.addCommand({
 			id: "run-agent-tasks",
-			name: "Run agent tasks",
+			name: "Run agent tasks (whole vault)",
 			callback: () => void this.runAllTasks(),
+		});
+
+		this.addCommand({
+			id: "run-agent-tasks-current-note",
+			name: "Run agent tasks in current note",
+			callback: () => {
+				const file = this.app.workspace.getActiveFile();
+				if (!file) {
+					new Notice("No active note.");
+					return;
+				}
+				void this.runAllTasks(file);
+			},
 		});
 
 		this.addCommand({
@@ -47,12 +66,16 @@ export default class AgentTasks extends Plugin {
 		throw new Error("Agent Tasks requires a local vault (desktop).");
 	}
 
-	async runAllTasks(): Promise<void> {
+	async runAllTasks(onlyFile?: TFile): Promise<void> {
 		if (this.running) {
 			new Notice("Agent tasks are already running.");
 			return;
 		}
-		const tasks = await scanForTasks(this.app.vault, this.settings.tag);
+		const tasks = await scanForTasks(
+			this.app.vault,
+			this.settings.tag,
+			onlyFile
+		);
 		if (tasks.length === 0) {
 			new Notice(`No open ${this.settings.tag} tasks found.`);
 			return;
