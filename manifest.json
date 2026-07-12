@@ -1,0 +1,10 @@
+{
+  "id": "agent-tasks",
+  "name": "Agent Tasks",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Tag a task with #agent and Claude Code completes it — reads and edits your vault, uses your MCP tools, and checks the box when done",
+  "author": "Lewbs",
+  "authorUrl": "https://github.com/lewibs",
+  "isDesktopOnly": true
+}
