@@ -139,8 +139,11 @@ export default class AgentTasks extends Plugin {
 			}
 			const doneLine = inProgressLine.replace("- [/]", "- [x]");
 			const suffix = await this.buildResultSuffix(task, result.text);
+			// Tasks-plugin-style completion date, e.g. "✅ 2026-07-11"
+			const now = new Date();
+			const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 			await replaceTaskLine(this.app.vault, task.file, inProgressLine, [
-				doneLine + suffix,
+				`${doneLine}${suffix} ✅ ${date}`,
 			]);
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
