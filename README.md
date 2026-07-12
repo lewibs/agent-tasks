@@ -12,7 +12,7 @@ Press the **brain-circuit ribbon button** (or run the "Run agent tasks" command)
 
 - the checkbox is checked off (`- [x]`)
 - a `🤖` summary of what the agent did is appended to the task line
-- long results are written to a note in `agent-outputs/` and linked
+- long results become a note in `agent-summaries/`, linked from the task line: `- [x] task #agent [[agent-summaries/task-name]]`
 
 While a task runs it is marked `- [/]`, and progress streams to the status bar. Tasks run sequentially; failures are recorded under the task with `⚠️` and the checkbox is restored.
 

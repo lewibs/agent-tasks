@@ -101,11 +101,11 @@ export class SettingsTab extends PluginSettingTab {
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder("agent-outputs")
+					.setPlaceholder("agent-summaries")
 					.setValue(this.plugin.settings.resultFolder)
 					.onChange(async (value) => {
 						this.plugin.settings.resultFolder =
-							value || "agent-outputs";
+							value || "agent-summaries";
 						await this.settingsManager.saveSettings(
 							this.plugin.settings
 						);

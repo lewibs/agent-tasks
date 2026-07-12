@@ -13,7 +13,7 @@ export const DEFAULT_SETTINGS: AgentTasksSettings = {
 	model: "",
 	permissionMode: "acceptEdits",
 	tag: "#agent",
-	resultFolder: "agent-outputs",
+	resultFolder: "agent-summaries",
 };
 
 export class SettingsManager {

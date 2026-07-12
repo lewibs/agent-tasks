@@ -177,8 +177,8 @@ export default class AgentTasks extends Plugin {
 		].join("\n");
 	}
 
-	// Builds the inline " — 🤖 …" suffix appended to the completed task line.
-	// Long results are written to a note and linked instead of inlined.
+	// Builds the suffix appended to the completed task line: short results
+	// inline (" — 🤖 …"), long results as a bare wiki-link to a summary note.
 	private async buildResultSuffix(
 		task: AgentTask,
 		text: string
@@ -187,7 +187,7 @@ export default class AgentTasks extends Plugin {
 		if (flat.length <= RESULT_INLINE_LIMIT) {
 			return ` — 🤖 ${flat}`;
 		}
-		const folder = normalizePath(this.settings.resultFolder || "agent-outputs");
+		const folder = normalizePath(this.settings.resultFolder || "agent-summaries");
 		if (!(await this.app.vault.adapter.exists(folder))) {
 			await this.app.vault.adapter.mkdir(folder);
 		}
@@ -203,7 +203,7 @@ export default class AgentTasks extends Plugin {
 			notePath,
 			`Task: ${task.text}\nFrom: [[${task.file.path}]]\n\n---\n\n${text}\n`
 		);
-		return ` — 🤖 ${flat.slice(0, 150)}… ([[${notePath}|full result]])`;
+		return ` [[${notePath.replace(/\.md$/, "")}]]`;
 	}
 
 	private async resetInProgress(): Promise<void> {
