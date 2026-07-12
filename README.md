@@ -11,7 +11,7 @@ Tag any task in your Obsidian vault with `#agent` and let an AI agent complete i
 Press the **brain-circuit ribbon button** (or run the "Run agent tasks" command) and each open `#agent` task is handed to [Claude Code](https://claude.com/claude-code) running headless against your vault. The agent can read, create, and edit notes, run commands, search the web — everything Claude Code can do. When it finishes:
 
 - the checkbox is checked off (`- [x]`)
-- a `🤖` summary of what the agent did is recorded under the task
+- a `🤖` summary of what the agent did is appended to the task line
 - long results are written to a note in `agent-outputs/` and linked
 
 While a task runs it is marked `- [/]`, and progress streams to the status bar. Tasks run sequentially; failures are recorded under the task with `⚠️` and the checkbox is restored.

@@ -115,10 +115,9 @@ export default class AgentTasks extends Plugin {
 				throw new Error(result.text);
 			}
 			const doneLine = inProgressLine.replace("- [/]", "- [x]");
-			const resultLines = await this.formatResult(task, result.text);
+			const suffix = await this.buildResultSuffix(task, result.text);
 			await replaceTaskLine(this.app.vault, task.file, inProgressLine, [
-				doneLine,
-				...resultLines,
+				doneLine + suffix,
 			]);
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
@@ -155,18 +154,16 @@ export default class AgentTasks extends Plugin {
 		].join("\n");
 	}
 
-	private async formatResult(
+	// Builds the inline " — 🤖 …" suffix appended to the completed task line.
+	// Long results are written to a note and linked instead of inlined.
+	private async buildResultSuffix(
 		task: AgentTask,
 		text: string
-	): Promise<string[]> {
-		const indent = `${task.indent}\t`;
-		if (text.length <= RESULT_INLINE_LIMIT) {
-			return text
-				.trim()
-				.split("\n")
-				.map((line, i) => `${indent}- ${i === 0 ? "🤖 " : ""}${line}`);
+	): Promise<string> {
+		const flat = oneLine(text);
+		if (flat.length <= RESULT_INLINE_LIMIT) {
+			return ` — 🤖 ${flat}`;
 		}
-		// Long result: write it to a note and link it
 		const folder = normalizePath(this.settings.resultFolder || "agent-outputs");
 		if (!(await this.app.vault.adapter.exists(folder))) {
 			await this.app.vault.adapter.mkdir(folder);
@@ -183,8 +180,7 @@ export default class AgentTasks extends Plugin {
 			notePath,
 			`Task: ${task.text}\nFrom: [[${task.file.path}]]\n\n---\n\n${text}\n`
 		);
-		const firstLine = oneLine(text).slice(0, 200);
-		return [`${indent}- 🤖 ${firstLine}… ([[${notePath}|full result]])`];
+		return ` — 🤖 ${flat.slice(0, 150)}… ([[${notePath}|full result]])`;
 	}
 
 	private async resetInProgress(): Promise<void> {
